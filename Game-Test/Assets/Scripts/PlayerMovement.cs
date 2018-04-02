@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour {
     private CharacterController controller;
     private Vector3 movement;
 
+    
+    float rotY;
+
     // Use this for initialization
     void Start () {
         controller = GetComponent<CharacterController>();
@@ -24,13 +27,15 @@ public class PlayerMovement : MonoBehaviour {
 
         //TODO time.deltaTime på rotation?
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float rotY = - (Input.GetAxis("Mouse Y") * mouseSensitivity);
+        rotY -= (Input.GetAxis("Mouse Y") * mouseSensitivity);
+        
         transform.Rotate(new Vector3(0, rotX, 0));
-        cam.transform.Rotate(rotY, 0, 0);
 
+        rotY = Mathf.Clamp(rotY, -89.0f, 89.0f);
+        cam.transform.localRotation = Quaternion.Euler(rotY, 0, 0);
 
         movement = new Vector3(Input.GetAxis("Horizontal") *moveSpeed , movement.y, Input.GetAxis("Vertical") * moveSpeed);
-        //movement = transform.TransformDirection(movement);
+        
         
         if (controller.isGrounded && Input.GetButton("Jump"))
             movement.y = jumpSpeed;
